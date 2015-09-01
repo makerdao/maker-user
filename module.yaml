@@ -1,0 +1,5 @@
+srcs:
+    "user.sol": true
+    "interfaces.sol": true
+deps:
+    ["dappsys"]
