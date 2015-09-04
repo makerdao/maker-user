@@ -1,19 +1,24 @@
-import 'dappsys/math/math.sol';
 import 'maker/interfaces.sol';
 
 // Contracts for users of the Maker system. If you're looking for
 // the source for the Maker system itself, look in maker-core.
 
-contract MakerAssetMathUser is DSFixedPointMathUser(10**18) {}
+// Maker_V0 deployed to:   0x0
+
 // contract MakerUser is MakerUser_V0 {}     below definition
-contract MakerUser_V0 is DSTransientContractConsumer
+contract MakerUser_V0 is DSSync
 {
     Maker M;
+    uint M_id;
+    address constant MAKER_V0 = 0x0;
     // Until this modifier is removed from this mixin, you should
     // use it with any function which touches `M`
+    function MakerUser_V0() {
+        M_id = sync_with( DSMigratable(MAKER_V0) );
+    }
     modifier maker_sync() {
         _ds_sync();
-        M = Maker(address(t));
+        M = Maker(_m[M_id]);
         _
     }
 

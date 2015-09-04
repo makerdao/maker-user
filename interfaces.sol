@@ -1,3 +1,5 @@
+import 'dappsys/math/math.sol';
+
 // An interface contract with the ability to upgrade. This is
 // to be replaced with the Maker kernel, which will also implement
 // the latest version of the interface and then do all upgrades to itself
@@ -8,6 +10,8 @@ contract Maker {
     function get(bytes32 key) constant returns (bytes32);
     function _ds_get_update() returns (address next_maker);
 }
+
+contract MakerAssetMathMixin is DSFixedPointMathMixin(10**18) {}
 
 contract MakerAsset {
     function balances( address who ) constant returns (uint amount);
