@@ -8,7 +8,7 @@ import 'dappsys/math/math.sol';
 // contract. You probably don't want to ever refer to `Maker` directly.
 contract Maker {
     function get(bytes32 key) constant returns (bytes32);
-    function _ds_get_update() returns (address next_maker);
+    function latest_version() returns (Maker latest_version);
 }
 
 contract MakerAssetMathMixin is DSFixedPointMathMixin(10**18) {}
