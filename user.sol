@@ -41,7 +41,20 @@ contract MakerUser_V0
         return MakerAssetRegistry( address(M.get("MAR")) );
     }
 
-    /* Code generation for charge(...) internal function and costs(...) modifier
+    function MAR() 
+             maker_sync()
+             internal
+             constant
+             returns (MakerAssetRegistry)
+    {
+        return MakerAssetRegistry( address(M.get("MAR")) );
+    }
+
+    /* Code generation for internal functions and modifiers:
+     *   function sufficient_buffered_balances(...)
+     *   function charge(...)
+     *   modifier charges(...)
+     *   modifier costs(...)
      */
 
     /*[[[cog
@@ -59,7 +72,7 @@ contract MakerUser_V0
             args = ", ".join([invokeline(j+1) for j in range(i+1)])
 
 
-            cog.outl("function sufficient_balances(%s) maker_sync() internal returns (bool)" % (typed_args))
+            cog.outl("function sufficient_buffer_balances(%s) maker_sync() internal returns (bool)" % (typed_args))
             cog.outl("{")
             cog.outl("    var reg = MakerAssetRegistry( address(M.get(\"MAR\")) );")
             conditions = []
@@ -75,7 +88,7 @@ contract MakerUser_V0
             cog.outl("function charge(%s) maker_sync() internal returns (bool)" % (typed_args))
             cog.outl("{")
             cog.outl("    var reg = MakerAssetRegistry( address(M.get(\"MAR\")) );")
-            cog.outl("    if( sufficient_balances( %s ) )" % args)
+            cog.outl("    if( sufficient_buffer_balances( %s ) )" % args)
             cog.outl("    {")
             for j in range(i+1):
                 s = str(j+1)
@@ -89,7 +102,7 @@ contract MakerUser_V0
 
             cog.outl("modifier costs%s(%s) {" % (s, typed_args))
             cog.outl("    _maker_sync();")
-            cog.outl("    if( sufficient_balances(%s) ) {" % (args))
+            cog.outl("    if( sufficient_buffer_balances(%s) ) {" % (args))
             cog.outl("         _")
             cog.outl("    }")
             cog.outl("}")

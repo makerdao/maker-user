@@ -11,7 +11,10 @@ contract Maker {
     function latest_version() returns (Maker latest_version);
 }
 
-contract MakerAssetMathMixin is DSFixedPointMathMixin(10**18) {}
+contract MakerAssetMathMixin { // restricted DSFxpMathMixin for 10**18
+    function mul(uint a, uint b) internal returns (uint c);
+    function div(uint a, uint b) internal returns (uint c);
+}
 
 contract MakerAsset {
     function balances( address who ) constant returns (uint amount);
