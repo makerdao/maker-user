@@ -28,8 +28,7 @@ contract MakerUser_V0
              constant 
              returns (MakerAsset)
     {
-        var reg = MakerAssetRegistry( address(M.get("MAR")) );
-        return reg.get_asset(symbol);
+        return M.get_asset( symbol );
     }
 
     function maker_asset_registry()
