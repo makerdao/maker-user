@@ -21,13 +21,18 @@ it easer to reason about correctness using helper modifiers, lets you write asse
 way that are automatically easy to compose, and generally feels less clunky for contracts of all levels
 of complexity.
 
-
     contract MakerAsset {
-        function balances(address) returns (uint);
-        function withdraw(uint) returns (bool);
-        function charge(uint) returns (bool);
-    }
+        function supply() constant returns (uint current_supply);
+        function balances( address who ) constant returns (uint amount);
 
+        function transfer( address to, uint amount ) returns (bool success);
+
+        function buffered_balances( address who ) constant returns (uint amount);
+
+        function withdraw( uint amount ) returns (bool success);
+        function withdraw_and_call( uint amount, address target, bytes calldata) returns (bool success);
+        function charge( uint amount ) returns (bool success);
+    }
 
 
 Using assets in the Maker ecosystem is easy, in part because of the `MakerUser` mixin.

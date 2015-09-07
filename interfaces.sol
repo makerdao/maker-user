@@ -12,8 +12,10 @@ contract Maker {
 }
 
 contract MakerAssetMathMixin { // restricted DSFxpMathMixin for 10**18
-    function mul(uint a, uint b) internal returns (uint c);
-    function div(uint a, uint b) internal returns (uint c);
+    function _fxp_mul(uint a, uint b) internal returns (uint c);
+    function _fxp_div(uint a, uint b) internal returns (uint c);
+    function _fxp_max(uint a, uint b) internal returns (uint c);
+    function _fxp_min(uint a, uint b) internal returns (uint c);
 }
 
 contract MakerAsset {
@@ -28,7 +30,6 @@ contract MakerAsset {
                               , bytes calldata)
              returns (bool success);
     function charge( uint amount ) returns (bool success);
-    function buffered_balance() constant returns (uint amount);
     function buffered_balances( address who ) constant returns (uint amount);
 }
 

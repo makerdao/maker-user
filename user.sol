@@ -79,7 +79,7 @@ contract MakerUser_V0
             for j in range(i+1):
                 s = str(j+1)
                 cog.outl("    var asset%s = reg.get_asset(symbol%s);" % (s,s))
-                conditions.append("asset%s.buffered_balance() >= amount%s" % (s, s))
+                conditions.append("asset%s.buffered_balances(address(this)) >= amount%s" % (s, s))
             conditions = "\n         && ".join(conditions)
             cog.outl("    return %s;" % conditions);
             cog.outl("}")
