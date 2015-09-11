@@ -141,4 +141,37 @@ then filled by someone with MKR who wants to trade.
         }
     }
 
+To use this contract, you need to have enough MKR in your buffer. There are two ways to
+do this, one is slightly more usable for contracts and the other can only be used by keys.
+
+`otc_buyer.sol`
+
+    contract otc_buyer() is MakerUser {
+        function otc_buyer() {
+            var otc = SimpleOTC(0xdeadbeef);
+            maker_asset("MKR").withdraw(500);
+            otc.fill();
+        }
+    }
+
+If you are a key, you can use the same function, but it's not convenient, and it is only
+atomic within your key's "session" (other transactions signed by the same key share the same
+buffer):
+
+
+    var otc = SimpleOTC.at(0xdeadbeef)
+    maker.get_asset("MKR").withdraw(500);
+    // wait...
+    otc.fill();
+
+Instead, you can use the `withdraw_and_call` function. This function does a withdrawal
+and then calls the target directly from the asset contract. This function is restricted
+to keys (you cannot call it from a contract). This has the nice side-effect of allowing
+the target to still check if the signer is the balance owner, by checking if the sender
+is the asset contract.
+
+
+    var otc = SimpleOTC.at(0xdeadbeef)
+    maker.get_asset("MKR").withdraw_and_call(500, otc.address, sig("fill()"));
+                     //   .withdraw_and_call(500, otc.fill)    soon this will be possible
 
