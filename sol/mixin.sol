@@ -4,7 +4,7 @@ import 'maker/interfaces.sol';
 // the source for the Maker system itself, look in maker-core.
 
 // contract MakerUser is MakerUser_V0 {}
-contract MakerMixin_V0
+contract MakerUser_V0
 {
     Maker M;
     address constant MAKER_V0 = 0x0; // TODO
@@ -58,60 +58,97 @@ contract MakerMixin_V0
 
     /*[[[cog
         import cog
+        import textwrap
+
+        sufficient_buffer_balances = textwrap.dedent(
+        """
+            function sufficient_buffer_balances(%(typed_args)s) maker_sync internal returns (bool) {
+                var reg = MakerAssetRegistry( address( M.get( "MAR" ) ) );
+                %(asset_var_assignments)s
+                return %(asset_balance_checks)s;
+            }
+        """)
+
+        charge = textwrap.dedent(
+        """
+            function charge(%(typed_args)s) maker_sync() internal returns (bool) {
+                var reg = MakerAssetRegistry( address( M.get( "MAR") ) );
+                if( sufficient_buffer_balances( %(args)s ) ) {
+                    %(asset_charge_calls)s
+                    return true;
+                }
+                return false;
+            }
+        """)
+
+        modifier_costs = textwrap.dedent(
+        """
+            modifier costs%(index)s (%(typed_args)s) {
+                _maker_sync();
+
+                if( sufficient_buffer_balances(%(args)s) ) {
+                     _
+                }
+            }
+        """)
+                    
+        modifier_charges = textwrap.dedent(
+        """
+            modifier charges%(index)s (%(typed_args)s) {
+                _maker_sync();
+                if( charge(%(args)s) ) {
+                     _
+                }
+            }
+        """)
+
         def argline(i):
             s = str(i)
             return "bytes32 symbol%s, uint amount%s" % (s, s)
+
         def invokeline(i):
             s = str(i)
             return "symbol%s, amount%s" % (s, s)
 
         for i in range(8):
-            s = str(i+1)
+            asset_balance_checks = []
+            asset_var_assignments = ""
+            asset_charge_calls = ""
+
+            for j in range(i+1):
+                s = str(j+1)
+                asset_charge_calls += "\n        reg.get_asset(symbol%s).charge(amount%s);" % (s, s)
+                asset_var_assignments += "\n   var asset%s = reg.get_asset(symbol%s);" % (s, s)
+                asset_balance_checks.append("asset%s.buffered_balances(address(this)) >= amount%s" % (s, s))
+
+            asset_balance_checks = "\n         && ".join(asset_balance_checks)
+
             typed_args = ", ".join([(argline(j+1)) for j in range(i+1)])
             args = ", ".join([invokeline(j+1) for j in range(i+1)])
 
+            cog.outl(sufficient_buffer_balances % {
+                'typed_args': typed_args,
+                'asset_var_assignments': asset_var_assignments,
+                'asset_balance_checks': asset_balance_checks
+            });
 
-            cog.outl("function sufficient_buffer_balances(%s) maker_sync() internal returns (bool)" % (typed_args))
-            cog.outl("{")
-            cog.outl("    var reg = MakerAssetRegistry( address(M.get(\"MAR\")) );")
-            conditions = []
-            for j in range(i+1):
-                s = str(j+1)
-                cog.outl("    var asset%s = reg.get_asset(symbol%s);" % (s,s))
-                conditions.append("asset%s.buffered_balances(address(this)) >= amount%s" % (s, s))
-            conditions = "\n         && ".join(conditions)
-            cog.outl("    return %s;" % conditions);
-            cog.outl("}")
+            cog.outl(charge % {
+                'typed_args': typed_args,
+                'args': args,
+                'asset_charge_calls': asset_charge_calls
+            });
 
+            cog.outl(modifier_costs % {
+                'index': s,
+                'typed_args': typed_args,
+                'args': args
+            })
 
-            cog.outl("function charge(%s) maker_sync() internal returns (bool)" % (typed_args))
-            cog.outl("{")
-            cog.outl("    var reg = MakerAssetRegistry( address(M.get(\"MAR\")) );")
-            cog.outl("    if( sufficient_buffer_balances( %s ) )" % args)
-            cog.outl("    {")
-            for j in range(i+1):
-                s = str(j+1)
-                cog.outl("        var asset%s = reg.get_asset(symbol%s);" % (s,s))
-                cog.outl("        asset%s.charge(amount%s);" % (s, s))
-            cog.outl("        return true;")
-            cog.outl("    }")
-            cog.outl("    return false;")
-            cog.outl("}")
-
-
-            cog.outl("modifier costs%s(%s) {" % (s, typed_args))
-            cog.outl("    _maker_sync();")
-            cog.outl("    if( sufficient_buffer_balances(%s) ) {" % (args))
-            cog.outl("         _")
-            cog.outl("    }")
-            cog.outl("}")
-
-            cog.outl("modifier charges%s(%s) {" % (s, typed_args))
-            cog.outl("    _maker_sync();")
-            cog.outl("    if( charge(%s) ) {" % (args))
-            cog.outl("         _")
-            cog.outl("    }")
-            cog.outl("}")
+            cog.outl(modifier_charges % {
+                'index': s,
+                'typed_args': typed_args,
+                'args': args
+            })
     ]]]*/
 
     //[[[end]]]
