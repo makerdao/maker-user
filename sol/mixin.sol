@@ -4,7 +4,7 @@ import 'maker/interfaces.sol';
 // the source for the Maker system itself, look in maker-core.
 
 // contract MakerUser is MakerUser_V0 {}
-contract MakerUser_V0
+contract MakerMixin_V0
 {
     Maker M;
     address constant MAKER_V0 = 0x0; // TODO
@@ -118,4 +118,4 @@ contract MakerUser_V0
 
 }
 
-contract MakerUser is MakerUser_V0 {}
+contract MakerMixin is MakerUser_V0 {}

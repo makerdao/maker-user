@@ -1,5 +1,5 @@
 srcs:
-    "user.sol": true
+    "mixin.sol": true
     "interfaces.sol": true
 deps:
     ["dappsys"]
