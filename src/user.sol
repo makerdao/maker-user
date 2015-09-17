@@ -155,4 +155,4 @@ contract MakerUser_V0
 
 }
 
-contract MakerMixin is MakerUser_V0 {}
+contract MakerUser is MakerUser_V0 {}
