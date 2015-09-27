@@ -12,13 +12,6 @@ contract Maker {
     function latest_version() returns (Maker latest_version);
 }
 
-contract MakerAssetMathMixin { // restricted DSFxpMathMixin for 10**18
-    function _fxp_mul(uint a, uint b) internal returns (uint c);
-    function _fxp_div(uint a, uint b) internal returns (uint c);
-    function _fxp_max(uint a, uint b) internal returns (uint c);
-    function _fxp_min(uint a, uint b) internal returns (uint c);
-}
-
 contract MakerAsset {
     function balances( address who ) constant returns (uint amount);
     function supply() constant returns (uint current_supply);
