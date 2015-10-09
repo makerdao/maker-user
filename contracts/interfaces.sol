@@ -7,9 +7,9 @@ import 'dappsys/math/math.sol';
 // Use the MakerUser utility mixin to correctly interact with "the" maker
 // contract. You probably don't want to ever refer to `Maker` directly.
 contract Maker {
+    function set(bytes32 key, bytes32 value);
     function get(bytes32 key) constant returns (bytes32);
     function get_asset(bytes32 symbol) constant returns (MakerAsset);
-    function latest_version() returns (Maker latest_version);
 }
 
 contract MakerAsset {
