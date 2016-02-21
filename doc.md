@@ -3,7 +3,7 @@ Quickly build dai apps w/ `dapple` and `MakerUser`
 
 #### Prerequisites
 
-The only mandatory prerequisite is `npm`. In order to deploy contracts,
+The only mandatory requirement is `npm`. In order to deploy contracts,
 you'll need an Ethereum client like `geth`. If you have a local installation
 of `solc`, compiling your contracts will be 5-10x faster.
 
@@ -30,54 +30,78 @@ First, get `dapple` via `npm`:
     mkdir mydapp && cd mydapp
     dapple init
 
-#### Create a basic contract with a test
-
-TODO ryan
-
 #### Install `makeruser` package
 
-    dapple install https://github.com/MakerDAO/makeruser maker
-
-Note we are aliasing it to `maker` though its default name is `makeruser`.
+    dapple install makeruser 0.1.0
 
 Now you have access to the `MakerUser` mixin contract.
 
 A mixin is a contract with only internal functions - it is not an abstract contract (an interface),
 but the compiler will only emit anything if you use one of the internal functions in a derived contract.
 
-
 Let's create a simple one-off betting contract. A creator specifies a judge, who is
 trusted to resolve the bet according to the given terms (specified via IPFS hash).
-Anyone accepts the bet
+Anyone can accept the bet.
 
-    import 'maker/user.sol';
+This first version will only make use of the helpers that correspond directly with ERC20 functions.
+Later we will see how it can be shortened significantly using some other common patterns.
+
+    import 'makeruser/user.sol';
 
     contract SimpleBet is MakerUser
     {
         address public _creator;
-        address public _buyer;
+        address public _better;
         address public _judge
-        bytes public terms;
-        bool     _creator_bet;
-        uint     _creator_bet_amount;
-        uint     _required_bet_amount;
-        uint     _fee;
-        bool     _done;
-        function MyRegistry( address judge
-                           , uint judge_fee
-                           , uint creator_bet_amount
-                           , uint want_bet_amount
-                           , uint expiration )
+        bytes   public _terms_hash;
+        bool    public _creator_bet;
+        uint    public _creator_bet_amount;
+        uint    public _required_bet_amount;
+        uint    public _fee;
+        bool    public _init;
+        bool    public _bet;
+        bool    public _done;
+        function SimpleBet( address judge
+                          , uint judge_fee
+                          , uint creator_bet_amount
+                          , uint required_bet_amount
+                          , uint expiration )
         {
-            var my_dai_allowance = allowance(address(this), msg.sender, "DAI");
-            var initial_dai_required = creator_bet_amount + (fee / 2);
             _creator = msg.sender;
+            _creator_bet_amount = creator_bet_amount;
+            _required_bet_amount = required_bet_amount;
             _judge = judge;
+            _fee = judge_fee;
         }
-        function takeBet()
-                 costs( 
-        function resolve() {
+        function fund() {
+            var success = transferFrom( msg.sender, this, _creator_bet_amount, "DAI" );
+            if( !success ) {
+                throw;
+            }
+            _init = true;
+        }
+        function takeBet() {
+            if( !_init ) throw;
+            var success = transferFrom( msg.sender, this, _required_bet_amount, "DAI" );
+            if( !success ) {
+                throw;
+            }
+            _better = msg.sender;
+            _bet = true;
+        }
+        function resolve(bool result) {
+            if( !_bet ) throw;
+            if( msg.sender != _judge ) {
+                throw;
+            }
+            transfer( _judge, _fee, "DAI" );
+            var winnings = _creator_bet_amount + _required_bet_amount - _fee;
+            if( _creator_bet && result ) {
+                transfer( _creator, winnings, "DAI");
+            } else {
+                transfer( _better, winnings, "DAI");
+            }
+            selfdestruct(msg.sender);
         }
     }
-
-
+}
