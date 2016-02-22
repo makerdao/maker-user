@@ -1,94 +1,40 @@
 import 'dapple/test.sol';
-import 'interfaces.sol';
+import 'user.sol';
+import 'mock.sol';
 
-contract MakerUserTester is Tester {
-    DSTokenBase token;
-
-    function TokenProviderUserTester(DSTokenBase _token) {
-        token = _token;
+contract MakerUserTester is Tester, MakerUserGeneric {
+    function MakerUserTester( MakerTokenRegistry reg )
+             MakerUserGeneric( reg )
+    {
     }
-
-    function doApprove(address to, uint amount) returns (bool) {
-        return token.approve(to, amount);
+    function doApprove(address spender, uint value, bytes32 symbol) {
+        approve(spender, value, symbol);
     }
 }
 
 contract MakerUserTest is Test
-                        , MakerUserGeneric(MakerTokenRegistry(0x0))
-                        , TestFactoryUser
+                        , MakerUserGeneric(MakerTokenRegistry(0x0)) // set up in setUp
 {
-    uint constant issuedAmount = 1000;
-    bytes32 constant daiName = "DAI";
-    bytes32 constant ethName = "ETH";
-
-    DSEthToken _eth;
-    DSTokenBase _dai;
+    uint constant million = 10**18 * 10**6;
     MakerUserTester user1;
-    TokenProviderUserTester user2;
-
     function setUp() {
-        _eth = new DSEthToken();
-        _dai = new DSTokenBase();
-        _maker_tokens = new MakerTokenRegistry();
-        _maker_tokens.set(ethName, bytes32(address(_dai)));
-        _maker_tokens.set(daiName, bytes32(address(_dai)));
-
-        user1 = new TokenProviderUserTester(_dai);
-        user2 = new TokenProviderUserTester(_dai);
-        user1._target(this);
-        user2._target(this);
+        _maker_tokens = new MakerUserMockRegistry();
+        DSEthToken(address(getToken("ETH"))).deposit.value(10000)();
+        user1 = new MakerUserTester(_maker_tokens);
     }
 
-    function testGetToken() {
-        assertEq(getToken(daiName), _dai);
+    function testSetup() {
+        assertTrue( balanceOf(this, "ETH") > 1000, "Not enough ETH" );
+        assertTrue( balanceOf(this, "MKR") > 1000, "Not enough MKR" );
+        assertTrue( balanceOf(this, "DAI") > 1000, "Not enough DAI" );
     }
-
-    function testTotalSupply() {
-        assertEq(totalSupply(daiName), issuedAmount);
-    }
-
-    function testAllowanceStartsAtZero() logs_gas {
-        assertEq(allowance(user1, user2, daiName), 0);
-    }
-
-    function testValidTransfers() logs_gas {
-        uint sentAmount = 250;
-        transfer(user1, sentAmount, daiName);
-        assertEq(balanceOf(user1, daiName), sentAmount);
-        assertEq(balanceOf(this, daiName), issuedAmount - sentAmount);
-    }
-
-    function testFailInsufficientFundsTransfers() logs_gas {
-        uint sentAmount = 250;
-        transfer(user1, sentAmount, daiName);
-        transferFrom(user1, user2, sentAmount+1, daiName);
-    }
-
-    function testApproveSetsAllowance() logs_gas {
-        approve(user1, 25, daiName);
-        assertEq(allowance(this, user1, daiName), 25,
-                 "wrong allowance");
-    }
-
-    function testChargesAmountApproved() logs_gas {
-        uint amountApproved = 20;
-        user1.doApprove(this, amountApproved);
-        transfer(user1, issuedAmount, daiName);
-        assertTrue(transferFrom(user1, user2, amountApproved, daiName),
-            "couldn't transferFrom");
-        assertEq(balanceOf(user1, daiName), issuedAmount - amountApproved,
-             "wrong balance after transferFrom");
-    }
-
-    function testFailUnapprovedTransfers() logs_gas {
-        uint sentAmount = 250;
-
-        transfer(user1, issuedAmount, daiName);
-        transferFrom(user1, user2, sentAmount, daiName);
-    }
-
-    function testFailChargeMoreThanApproved() logs_gas {
-        approve(user1, 20, daiName);
-        transferFrom(this, user1, 21, daiName);
+    function testAllBasicSuccess() {
+        assertEq(million, totalSupply("MKR"));
+        transfer(user1, 200, "DAI");
+        assertEq(200, balanceOf(user1, "DAI"));
+        user1.doApprove(this, 100, "DAI");
+        assertEq(100, allowance(user1, this, "DAI"));
+        transferFrom(user1, this, 100, "DAI");
+        assertEq(100, balanceOf(user1, "DAI"));
     }
 }

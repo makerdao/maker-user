@@ -11,14 +11,14 @@ contract MakerUserGeneric {
         _maker_tokens = registry;
     }
 
-    function getMakerToken(bytes32 symbol) internal constant returns (MakerToken t) {
-        return _maker_tokens.getToken(t);
+    function getToken(bytes32 symbol) internal constant returns (DSToken t) {
+        return _maker_tokens.getToken(symbol);
     }
     function totalSupply(bytes32 symbol) internal constant returns (uint supply) {
-        return getMakerToken(symbol).totalSupply();
+        return getToken(symbol).totalSupply();
     }
     function balanceOf( address who, bytes32 symbol ) internal constant returns (uint value) {
-        return getMakerToken(symbol).balanceOf(who);
+        return getToken(symbol).balanceOf(who);
     }
     function allowance( address owner
                       , address spender
@@ -27,11 +27,11 @@ contract MakerUserGeneric {
         constant
         returns (uint _allowance)
     {
-        return getMakerToken(symbol).allowance(owner, spender);
+        return getToken(symbol).allowance(owner, spender);
     }
     function transfer( address to, uint value, bytes32 symbol) internal returns (bool ok)
     {
-        var success = getMakerToken(symbol).transfer(to, value);
+        var success = getToken(symbol).transfer(to, value);
         if( !success ) throw;
         return success;
     }
@@ -39,13 +39,13 @@ contract MakerUserGeneric {
         internal 
         returns (bool ok)
     {
-        var success = getMakerToken(symbol).transferFrom(from, to, value);
+        var success = getToken(symbol).transferFrom(from, to, value);
         if( !success ) throw;
         return success;
     }
     function approve(address spender, uint value, bytes32 symbol) internal returns (bool ok)
     {
-        var success = getMakerToken(symbol).approve(spender, value);
+        var success = getToken(symbol).approve(spender, value);
         if( !success ) throw;
         return success;
     }
