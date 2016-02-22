@@ -7,4 +7,4 @@ environments:
     objects:
       MAR1:
         class: MakerAssetRegistry
-        address: '0x0'
+        address: '0x213183be469a38e99facc2c468bb7e3c01377bce'
