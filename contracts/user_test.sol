@@ -17,6 +17,7 @@ contract MakerUserTest is Test
 {
     uint constant million = 10**18 * 10**6;
     MakerUserTester user1;
+
     function setUp() {
         _maker_tokens = new MakerUserMockRegistry();
         DSEthToken(address(getToken("ETH"))).deposit.value(10000)();
@@ -28,6 +29,7 @@ contract MakerUserTest is Test
         assertTrue( balanceOf(this, "MKR") > 1000, "Not enough MKR" );
         assertTrue( balanceOf(this, "DAI") > 1000, "Not enough DAI" );
     }
+
     function testAllBasicSuccess() {
         assertEq(million, totalSupply("MKR"));
         transfer(user1, 200, "DAI");
@@ -37,4 +39,5 @@ contract MakerUserTest is Test
         transferFrom(user1, this, 100, "DAI");
         assertEq(100, balanceOf(user1, "DAI"));
     }
+
 }
