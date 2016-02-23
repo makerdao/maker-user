@@ -1,17 +1,17 @@
 import 'interfaces.sol';
 
 contract MakerUserGeneric {
-    MakerTokenRegistry _maker_tokens;
+    MakerTokenRegistry _M;
 
     // `registry` MUST throw for invalid `getToken` calls (unset tokens).
     // Use a registry derived from `DSNullMap`, for example.
     // Tokens contracts must not return true on failure!
     function MakerUserGeneric( MakerTokenRegistry registry ) {
-        _maker_tokens = registry;
+        _M = registry;
     }
 
     function getToken(bytes32 symbol) internal constant returns (DSToken t) {
-        return _maker_tokens.getToken(symbol);
+        return _M.getToken(symbol);
     }
     function totalSupply(bytes32 symbol) internal constant returns (uint supply) {
         return getToken(symbol).totalSupply();

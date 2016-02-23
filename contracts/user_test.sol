@@ -19,9 +19,9 @@ contract MakerUserTest is Test
     MakerUserTester user1;
 
     function setUp() {
-        _maker_tokens = new MakerUserMockRegistry();
+        _M = new MakerUserMockRegistry();
         DSEthToken(address(getToken("ETH"))).deposit.value(10000)();
-        user1 = new MakerUserTester(_maker_tokens);
+        user1 = new MakerUserTester(_M);
     }
 
     function testSetup() {
@@ -40,4 +40,7 @@ contract MakerUserTest is Test
         assertEq(100, balanceOf(user1, "DAI"));
     }
 
+    function testToWei() {
+        assertEq( 10**18, toWei(1) );
+    }
 }
