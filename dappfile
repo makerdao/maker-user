@@ -9,9 +9,21 @@ environments:
       MAR1:
         class: MakerAssetRegistry
         address: '0x9e2a411a0eb749fa380497bdcd97dedee5514c8d'
-  ethereum:
+      dai_frontend:
+        class: DSTokenFrontend
+        address: '0xae79fcb361aa46e6cf95a9d355fe80cf88fdacc0'
+      mkr_frontend:
+        class: DSTokenFrontend
+        address: '0x9d6bb976159a6c131512ce27c83ba1fcb05b22ea'
+  live:
     objects:
       MAR1:
-        class: MakerAssetRegistry:
+        class: MakerAssetRegistry
         address: 0x37d3e484971a2463eef75b684ca3e17c93128884
+      dai_frontend:
+        class: DSTokenFrontend
+        address: '0x4fe1c497a3bd6189b54567836d0c2db4a0f1f795'
+      mkr_frontend:
+        class: DSTokenFrontend
+        address: '0xbf028a110ce005f296b010487a95b595c1ac9e63'
  
