@@ -8,4 +8,10 @@ environments:
     objects:
       MAR1:
         class: MakerAssetRegistry
-        address: '0x213183be469a38e99facc2c468bb7e3c01377bce'
+        address: '0x9e2a411a0eb749fa380497bdcd97dedee5514c8d'
+  ethereum:
+    objects:
+      MAR1:
+        class: MakerAssetRegistry:
+        address: 0x37d3e484971a2463eef75b684ca3e17c93128884
+ 

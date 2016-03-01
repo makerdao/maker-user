@@ -7,8 +7,7 @@ contract MakerUser is MakerUserGeneric {
              MakerUserGeneric( MakerTokenRegistry(registry) )
     {
         if( address(registry) == address(0x0) ) {
-            // reg = MakerTokenRegistry(0x1111);
-            throw;
+            registry = MakerTokenRegistry(0x37d3e484971a2463eef75b684ca3e17c93128884);
         } else if( address(registry) == address(0x1) ) {
             registry = MakerTokenRegistry(0x213183be469a38e99facc2c468bb7e3c01377bce);
         } else {
