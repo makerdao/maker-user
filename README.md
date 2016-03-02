@@ -74,27 +74,21 @@ Later we will see how it can be shortened significantly using some other common 
             _fee = judge_fee;
         }
         function fund() {
-            var success = transferFrom( msg.sender, this, _creator_bet_amount, "DAI" );
-            if( !success ) {
-                throw;
-            }
+            transferFrom( msg.sender, this, _creator_bet_amount, "DAI" );
             _init = true;
         }
         function takeBet() {
             if( !_init ) throw;
-            var success = transferFrom( msg.sender, this, _required_bet_amount, "DAI" );
-            if( !success ) {
-                throw;
-            }
+            transferFrom( msg.sender, this, _required_bet_amount, "DAI" );
             _better = msg.sender;
             _bet = true;
         }
         function resolve(bool result) {
             if( !_bet ) throw;
-            if( msg.sender != _judge ) {
-                throw;
-            }
+            if( msg.sender != _judge ) throw;
+
             transfer( _judge, _fee, "DAI" );
+
             var winnings = _creator_bet_amount + _required_bet_amount - _fee;
             if( _creator_bet && result ) {
                 transfer( _creator, winnings, "DAI");
