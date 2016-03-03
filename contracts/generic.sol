@@ -30,6 +30,10 @@ contract MakerUserGeneric {
     }
     function transfer( address to, uint value, bytes32 symbol) internal returns (bool ok)
     {
+        // temporarily work around dappsys bug in maker system
+        if( value == 0 ) {
+            return true;
+        }
         var success = getToken(symbol).transfer(to, value);
         if( !success ) throw;
         return success;
@@ -38,6 +42,10 @@ contract MakerUserGeneric {
         internal 
         returns (bool ok)
     {
+        // temporarily work around dappsys bug in maker system
+        if( value == 0 ) {
+            return true;
+        }
         var success = getToken(symbol).transferFrom(from, to, value);
         if( !success ) throw;
         return success;
