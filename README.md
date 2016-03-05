@@ -41,6 +41,6 @@ but the compiler will only emit anything if you use one of the internal function
 
 For now, the best documentation is these example dapps:
 
-[https://github.com/nexusdev/feedbase](FeedBase)
+[FeedBase](https://github.com/nexusdev/feedbase)
 
-[https://github.com/makerdao/maker-otc](Maker OTC)
+[Maker OTC](https://github.com/makerdao/maker-otc)
