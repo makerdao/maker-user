@@ -6,10 +6,10 @@ contract MakerUser is MakerUserGeneric {
     function MakerUser( MakerUserLinkType registry )
              MakerUserGeneric( MakerTokenRegistry(registry) )
     {
-        if( address(registry) == address(0x0) ) {
-            registry = MakerTokenRegistry(0x37d3e484971a2463eef75b684ca3e17c93128884);
-        } else if( address(registry) == address(0x1) ) {
-            registry = MakerTokenRegistry(0x213183be469a38e99facc2c468bb7e3c01377bce);
+        if( address(registry) == address(0x0) ) {  // mainnet
+            registry = MakerTokenRegistry(0xc6882fbffd309dc976dd6e4c79cc91e4c1482140);
+        } else if( address(registry) == address(0x1) ) { // morden
+            registry = MakerTokenRegistry(0x877c5369c747d24d9023c88c1aed1724f1993efe);
         } else {
             registry = MakerTokenRegistry(registry);
         }
