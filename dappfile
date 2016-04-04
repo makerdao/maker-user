@@ -1,8 +1,10 @@
 name: makeruser
-version: 0.1.3
+version: 0.1.4
 layout:
-    sol_sources: "contracts"
-    build_dir: "build"
+  sol_sources: "contracts"
+  build_dir: "build"
+dependencies:
+  dappsys: 0.1.2
 environments:
   morden:
     objects:
@@ -26,4 +28,4 @@ environments:
       mkr_frontend:
         class: DSTokenFrontend
         address: '0xc66ea802717bfb9833400264dd12c2bceaa34a6d'
- 
+
