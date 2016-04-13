@@ -1,5 +1,5 @@
 name: makeruser
-version: 0.1.4
+version: 0.1.5
 layout:
   sol_sources: "contracts"
   build_dir: "build"

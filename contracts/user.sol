@@ -7,11 +7,11 @@ contract MakerUser is MakerUserGeneric {
              MakerUserGeneric( MakerTokenRegistry(registry) )
     {
         if( address(registry) == address(0x0) ) {  // mainnet
-            registry = MakerTokenRegistry(0xc6882fbffd309dc976dd6e4c79cc91e4c1482140);
+            _M = MakerTokenRegistry(0xc6882fbffd309dc976dd6e4c79cc91e4c1482140);
         } else if( address(registry) == address(0x1) ) { // morden
-            registry = MakerTokenRegistry(0x877c5369c747d24d9023c88c1aed1724f1993efe);
+            _M = MakerTokenRegistry(0x877c5369c747d24d9023c88c1aed1724f1993efe);
         } else {
-            registry = MakerTokenRegistry(registry);
+            _M = MakerTokenRegistry(registry);
         }
     }
 }

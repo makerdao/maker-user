@@ -44,3 +44,19 @@ contract MakerUserTest is Test
         assertEq( 10**18, toWei(1) );
     }
 }
+
+contract MakerUserMordenTest is MakerUserMorden, Test {
+    function setUp() {
+    }
+    function testCorrectAddress() {
+        assertEq(address(_M), address(0x877c5369c747d24d9023c88c1aed1724f1993efe));
+    }
+}
+
+contract MakerUserMainnetTest is MakerUserMainnet, Test {
+    function setUp() {
+    }
+    function testCorrectAddress() {
+        assertEq(address(_M), address(0xc6882fbffd309dc976dd6e4c79cc91e4c1482140));
+    }
+}

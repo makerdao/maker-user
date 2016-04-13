@@ -6,8 +6,8 @@ import 'dappsys/token/registry.sol';
 contract MakerUserLinkType {}
 
 // Maker's curated DSTokenRegistry
-// ethereum:
-// morden: 0x1 -> 0x213183be469a38e99facc2c468bb7e3c01377bce
+// live:   0x0 -> 0xc6882fbffd309dc976dd6e4c79cc91e4c1482140
+// morden: 0x1 -> 0x877c5369c747d24d9023c88c1aed1724f1993efe
 contract MakerTokenRegistry is DSTokenRegistry, MakerUserLinkType {}
 contract MakerAssetRegistry is DSTokenRegistry, MakerUserLinkType {}
 
