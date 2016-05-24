@@ -1,10 +1,10 @@
 name: makeruser
-version: 0.1.5
+version: 0.1.6
 layout:
   sol_sources: "contracts"
   build_dir: "build"
 dependencies:
-  dappsys: 0.1.2
+  dappsys: 0.3.0
 environments:
   morden:
     objects:
